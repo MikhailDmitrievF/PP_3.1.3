@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>User information-page</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<div class="bg-dark text-white p-2">
+    <div class="container d-flex justify-content-between align-items-center">
+        <div>
+            <span sec:authorize="isAuthenticated()">
+                User: <strong><span sec:authentication="name"></span></strong> with Role
+                <strong>
+                    <span th:each="role, iterStat : ${#authentication.principal.authorities}"
+                          th:text="${#strings.substringAfter(role.authority, 'ROLE_') + (iterStat.last ? '' : ', ')}"></span>
+                </strong>
+            </span>
+        </div>
+        <div>
+            <form th:action="@{/logout}" method="post" class="d-inline">
+                <button type="submit" class="btn btn-link text-white btn-sm">Logout</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="position-fixed start-0" style="width: 230px;">
+    <div class="d-flex flex-column gap-2">
+        <a th:href="@{/admin}" class="btn w-100" style="position: absolute; top: 60px; text-align: left; justify-content: start; padding-left: 10px;">Admin</a>
+        <a th:href="@{/user}" class="btn btn-primary w-100" style="position: absolute; top: 110px; text-align: left; justify-content: start; padding-left: 10px;">User</a>
+    </div>
+</div>
+
+<div class="container mt-5">
+    <h1 class="mb-4">User information-page</h1>
+
+    <div class="mb-4">
+        <h2 class="mb-4">About user</h2>
+        <table class="table table-bordered table-striped">
+            <thead>
+            <tr>
+                <th>Username</th>
+                <th>Surname</th>
+                <th>Age</th>
+                <th>Roles</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:object="${currentUser}">
+                <td th:text="${currentUser.username}"></td>
+                <td th:text="${currentUser.surname}"></td>
+                <td th:text="${currentUser.age}"></td>
+                <td>
+                    <span th:each="role : ${currentUser.roles}" th:text="${role.name.substring(5)} + ' '"></span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
